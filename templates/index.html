@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Food by Calories</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        p {
+            color: #888;
+        }
+
+        /* Gaya tombol Cari */
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px; /* Tambahkan border-radius untuk sudut yang sedikit melengkung */
+            cursor: pointer;
+            transition: background-color 0.3s; /* Animasi perubahan warna latar belakang saat dihover */
+        }
+
+        button:hover {
+            background-color: #45a049; /* Warna latar belakang yang berbeda saat dihover */
+        }
+
+        /* Gaya navigasi */
+        .pagination {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .pagination button {
+            background-color: #ddd;
+            color: black;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            margin: 0 5px;
+            cursor: pointer;
+        }
+
+        .pagination button.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Search Food by Calories</h1>
+    <form method="post" style="max-width: 400px; margin: 0 auto;">
+        <label for="target_calories" style="display: block; margin-bottom: 10px;">Masukkan jumlah kalori yang dicari:</label>
+        <input type="number" name="target_calories" required style="width: 100%; padding: 8px;">
+        <br><br>
+        <center>
+        <button type="submit">Cari</button>
+        </center>
+    </form>
+
+    {% if result is not none %}
+        {% if result.empty %}
+            <p>Tidak ada hasil yang sesuai dengan kriteria pencarian.</p>
+        {% else %}
+            <h2>Hasil Pencarian:</h2>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Nama</th>
+                    <th>Kalori</th>
+                </tr>
+                {% for index, row in result.iterrows() %}
+                    <tr>
+                        <td>{{ row['id'] }}</td>
+                        <td>{{ row['name'] }}</td>
+                        <td>{{ row['calories'] }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+
+            <!-- Navigasi paginasi -->
+            <div class="pagination">
+                {% if page > 1 %}
+                    <button onclick="window.location.href='?page={{ page - 1 }}'">Previous</button>
+                {% endif %}
+                
+                <button class="active">{{ page }}</button>
+
+                {% if result.shape[0] >= 10 %}
+                    <button onclick="window.location.href='?page={{ page + 1 }}'">Next</button>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% endif %}
+</body>
+</html>
